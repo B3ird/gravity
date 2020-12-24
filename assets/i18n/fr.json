@@ -1,0 +1,55 @@
+{
+	"lang" : "fr",
+	"home": {
+		"play" : "Jouer",
+		"scores": "Scores",
+		"help": "Aide",
+		"settings" : "Paramètres",
+		"exit" : "Quitter"
+	},
+	"dialog": {
+		"exit":{
+			"title": "Quitter le jeu ?",
+			"desc": "Le jeu va être fermer",
+			"confirm": "Confirmer",
+			"cancel": "Annuler"
+		}
+	},
+	"game": {
+		"back": "Retour"
+	},
+	"scores":{
+		"title": "Scores",
+		"empty": "Vous n'avez pas encore de score d'enregistré, faites une partie !"
+	},
+	"contact": {
+		"title":"Envoyer moi un message :",
+		"sent": "Message envoyé !",
+		"error": "Une erreur s'est produite !",
+		"validation": "Renseignez le champs",
+		"msg_hint": "Votre message",
+		"name_hint": "Votre nom",
+		"send": "Envoyer"
+	},
+	"about": {
+		"title": "A propos...",
+		"me": "Bonjour et bienvenu sur ma toute première application en Flutter. Ce projet a été réalisé dans le cadre d'un apparentissage.",
+		"visit": "Mon portfolio"
+	},
+	"settings": {
+		"title": "Paramètres",
+		"music": "Activer la musique",
+		"language": "Langue"
+	},
+	"help": {
+		"title": "Aide",
+		"about" : "A propos",
+		"legend": "Légende",
+		"rules": "Règles",
+		"aim": "Votre objectif est simple, obtenir un maximum de points avant de mourir dans le vide intersidérale.",
+		"player": "Ceci est votre personnage, dirigez le à l'aide du stick de direction de haut en bas et indéfiniement sur l'axe horizontal.",
+		"meteor": "Une météorite, évitez les coute que coute !",
+		"bonus": "Une étoile filante, touchez là et obtenez un bonus de 1000 points !",
+		"sun": "Un soleil éclatant mais attention il attire tout vers lui..."
+	}
+}

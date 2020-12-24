@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/anchor.dart';
-import 'package:flame/animation.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
@@ -58,7 +57,9 @@ class GarvityGame extends Game with TapDetector {
   String score;
   bool scoreSaved;
 
-  GarvityGame(this.screenSize) {
+  bool pause = false;
+
+  GarvityGame() {
     initialize();
   }
 
@@ -66,20 +67,20 @@ class GarvityGame extends Game with TapDetector {
     scoreSaved = false;
     ellapsedTime = 0;
     ellapsedTimeScore = 0;
-    
+
     //meteor
     lastMeteorSpawn = 0;
     spawnMeteorDelay = 3.0;
     spawnMeteorDelayMin = 0.5;
     spawnMeteorDelayFactor = 0.9;
-    
+
     //bonus
     bonus = 0;
     lastBonusSpawn = 0;
     spawnBonusDelay = 5.0;
     spawnBonusDelayMax = 15;
     spawnBonusDelayFactor = 1.1;
-    
+
     gameOver = false;
 
     preloadImages();
@@ -92,12 +93,14 @@ class GarvityGame extends Game with TapDetector {
     controller = Controller(this);
     button = RestartButton(this);
     layout = Layout(this);
+  }
 
-    // Position pos = Position(screenSize.width/2, screenSize.height/2);
-    // Size size = Size(20,20);
-    // scoreText = Score("Score", pos, size);
-
-    // spawnMeteor();
+  void setPause(bool state) {
+    print("pause " + state.toString());
+    pause = state;
+    if (pause) { //avoid game to continue counting points
+      player.burn();
+    }
   }
 
   @override
@@ -125,50 +128,53 @@ class GarvityGame extends Game with TapDetector {
 
   @override
   void update(double t) {
-    ellapsedTime += t;
+    if (!pause) {
+      ellapsedTime += t;
 
-    controller.update(t);
-    player.update(t);
+      controller.update(t);
+      player.update(t);
 
-    int formatedScore = (ellapsedTimeScore * 100).toInt() + bonus.toInt();
-    score = formatedScore.toString() + " pts";
+      int formatedScore = (ellapsedTimeScore * 100).toInt() + bonus.toInt();
+      score = formatedScore.toString() + " pts";
 
-    if (gameOver) {
-      button.enabled = true;
-      controller.enabled = false;
-      if (!scoreSaved) {
-        saveScore(formatedScore);
+      if (gameOver) {
+        button.enabled = true;
+        controller.enabled = false;
+        if (!scoreSaved) {
+          scoreSaved = true;
+          saveScore(formatedScore);
+        }
+      } else {
+        ellapsedTimeScore = ellapsedTime;
+        button.enabled = false;
+        controller.enabled = true;
       }
-    } else {
-      ellapsedTimeScore = ellapsedTime;
-      button.enabled = false;
-      controller.enabled = true;
-    }
 
-    if (ellapsedTime - lastMeteorSpawn > spawnMeteorDelay) {
-      if (spawnMeteorDelay > spawnMeteorDelayMin) {
-        spawnMeteorDelay = spawnMeteorDelay * spawnMeteorDelayFactor;
+      if (ellapsedTime - lastMeteorSpawn > spawnMeteorDelay) {
+        if (spawnMeteorDelay > spawnMeteorDelayMin) {
+          spawnMeteorDelay = spawnMeteorDelay * spawnMeteorDelayFactor;
+        }
+        lastMeteorSpawn = ellapsedTime;
+        spawnMeteor();
+        // print("spawnDelay " + spawnDelay.toString());
       }
-      lastMeteorSpawn = ellapsedTime;
-      spawnMeteor();
-      // print("spawnDelay " + spawnDelay.toString());
-    }
 
-    if (ellapsedTime - lastBonusSpawn > spawnBonusDelay) {
-      if (spawnBonusDelay < spawnBonusDelayMax) {
-        spawnBonusDelay = spawnBonusDelay * spawnBonusDelayFactor;
+      if (ellapsedTime - lastBonusSpawn > spawnBonusDelay) {
+        if (spawnBonusDelay < spawnBonusDelayMax) {
+          spawnBonusDelay = spawnBonusDelay * spawnBonusDelayFactor;
+        }
+        lastBonusSpawn = ellapsedTime;
+        spawnBonus();
       }
-      lastBonusSpawn = ellapsedTime;
-      spawnBonus();
+
+      meteors.forEach((Meteor meteor) {
+        meteor.update(t);
+      });
+
+      bonuses.forEach((Bonus bonus) {
+        bonus.update(t);
+      });
     }
-
-    meteors.forEach((Meteor meteor) {
-      meteor.update(t);
-    });
-
-    bonuses.forEach((Bonus bonus) {
-      bonus.update(t);
-    });
   }
 
   @override
@@ -196,7 +202,7 @@ class GarvityGame extends Game with TapDetector {
   }
 
   void spawnBonus() {
-    print("SPAWN BONUS "+lastBonusSpawn.toString());
+    print("SPAWN BONUS " + lastBonusSpawn.toString());
     bonuses.add(Bonus(this));
     Flame.audio.play("bonus.mp3");
   }
@@ -251,6 +257,7 @@ class GarvityGame extends Game with TapDetector {
   }
 
   saveScore(int score) async {
+    print("saveScore");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> scores = prefs.getStringList("scores");
     if (scores == null) {
@@ -258,7 +265,6 @@ class GarvityGame extends Game with TapDetector {
     }
     scores.add(score.toString());
     await prefs.setStringList('scores', scores);
-    scoreSaved = true;
   }
 
   void obtainBonus() {

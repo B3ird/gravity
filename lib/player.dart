@@ -13,6 +13,7 @@ class Player {
   Vector2 mLocation;
   Rect mRect;
 
+  double playerHeight = 70;
   Size playerSize;
 
   Animation idleAnimation;
@@ -22,7 +23,7 @@ class Player {
   bool dead = false;
   bool isBurn = false;
 
-  double speed = 135.0;
+  double speed = 160.0;
   bool move = false;
   double lastMoveRadAngle = 0.0;
 
@@ -36,10 +37,9 @@ class Player {
 
     burnAnimation = Animation.sequenced("fx/burn_explosion.png", 13, textureHeight: 98, textureWidth: 98);
     crashAnimation = Animation.sequenced("fx/blood_explosion.png", 5, textureHeight: 123, textureWidth: 123);
-
+    playerSize = Size(playerHeight / 1.37, playerHeight);
     mLocation = Vector2(x, y);
     mSprite = Sprite("characters/player_left.png");
-    playerSize = Size(mGame.tileSize / 1.37, mGame.tileSize);
     mRect = Rect.fromLTWH(x, y, playerSize.width, playerSize.height); //ratio asset
   }
 
@@ -115,7 +115,7 @@ class Player {
           lastMoveRadAngle = (angle + corrector) * pi / 180;
         }
 
-        double gravity = 0.5;
+        double gravity = 0.6;
         mRect = Rect.fromLTWH(mRect.left, mRect.top + gravity, playerSize.width, playerSize.height);
       }
 
@@ -131,7 +131,6 @@ class Player {
         mRect = Rect.fromLTWH(mRect.left, -playerSize.height / 2, playerSize.width, playerSize.height);
       } else if (mRect.top > mGame.screenSize.height - sunLimit) {
         burn();
-        mRect = Rect.fromLTWH(mRect.left, mRect.top, playerSize.width, playerSize.height);
       }
     }
   }
@@ -140,10 +139,11 @@ class Player {
     if (!dead) {
       dead = true;
       isBurn = true;
+      mRect = Rect.fromLTWH(mRect.left-playerSize.width/2, mRect.top-playerSize.height/2, playerSize.width*2, playerSize.height*2);
       burnAnimation.loop = false;
       mGame.gameOver = true;
       Flame.audio.play("burn.mp3");
-      Flame.audio.play("wilhelm.mp3", volume: 0.1);
+      Flame.audio.play("wilhelm.mp3", volume: 0.05);
     }
   }
 
@@ -151,6 +151,7 @@ class Player {
     if (!dead) {
       dead = true;
       isBurn = false;
+      mRect = Rect.fromLTWH(mRect.left-playerSize.width/2, mRect.top-playerSize.height/2, playerSize.width*2, playerSize.height*2);
       crashAnimation.loop = false;
       mGame.gameOver = true;
       Random random = Random();

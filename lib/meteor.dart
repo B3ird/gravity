@@ -20,10 +20,12 @@ class Meteor {
   bool isBurn = false;
   Animation burnAnimation;
 
+  double minSize = 20;
+  double maxSize = 50;
+
   Meteor(this.mGame){
     Random random = Random();
-    double minSize = 20;
-    double maxSize = 50;
+
     double width = random.nextDouble() * maxSize + minSize;
     double height = random.nextDouble() * maxSize + minSize;
     mSize = Size(width,height);
@@ -72,7 +74,6 @@ class Meteor {
       double sunLimit = mGame.screenSize.height / 4;
       if (mRect.top > mGame.screenSize.height - sunLimit) {
         burn();
-        mRect = Rect.fromLTWH(mRect.left, mRect.top, mSize.width, mSize.height);
       }
     } else {
       if (isBurn) {
@@ -87,10 +88,13 @@ class Meteor {
 
   void burn() {
     if (!mDestroyed) {
+      mRect = Rect.fromLTWH(mRect.left-mSize.width/2, mRect.top-mSize.height/2, mSize.width*2, mSize.height*2);
       mDestroyed = true;
       isBurn = true;
       burnAnimation.loop = false;
-      Flame.audio.play("burn.mp3");
+      double volume = (mRect.width*mRect.height)/(maxSize*maxSize);
+      print("volume "+volume.toString());
+      Flame.audio.play("burn.mp3", volume: volume);
     }
   }
 }

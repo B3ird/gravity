@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  flutter_i18n: ^0.20.1
   audioplayers: ^0.15.1 #flame version dependant
   webview_flutter: 1.0.7
   http: ^0.12.2
@@ -56,6 +57,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    #IMAGES
     - assets/images/ui/b3ird.png
     - assets/images/ui/logo.png
     - assets/images/ui/small_logo.png
@@ -69,9 +71,12 @@ flutter:
     - assets/images/fx/blood_screen.png
     - assets/images/props/meteor.png
     - assets/images/props/bonus.png
+    - assets/images/props/star.png
+    - assets/images/props/sun.png
     - assets/images/controller/joystick_background.png
     - assets/images/controller/joystick_knob.png
     - assets/images/controller/restart.png
+    #AUDIO
     - assets/audio/music.mp3
     - assets/audio/burn.mp3
     - assets/audio/crash_1.mp3
@@ -86,6 +91,9 @@ flutter:
     - assets/audio/exit.mp3
     - assets/audio/bonus.mp3
     - assets/audio/get_bonus.mp3
+    #TEXTS
+    - assets/i18n/fr.json
+    - assets/i18n/en.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

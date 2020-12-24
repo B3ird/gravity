@@ -1,0 +1,55 @@
+{
+	"lang" : "en",
+	"home":{
+		"play" : "Play",
+		"scores": "High scores",
+		"help": "Help",
+		"settings": "Settings",
+		"exit" : "Exit"
+	},
+	"dialog": {
+		"exit":{
+			"title": "Quit game ?",
+			"desc": "Game will be closed",
+			"confirm": "Confirm",
+			"cancel": "Cancel"
+		}
+	},
+	"game": {
+		"back": "Back"
+	},
+	"scores":{
+		"title": "Scores",
+		"empty": "No record yet, play !"
+	},
+	"contact": {
+		"title":"Send me a message :",
+		"sent": "Message sent !",
+		"error": "An error occured !",
+		"validation": "Please fill field",
+		"msg_hint": "Your message",
+		"name_hint": "Your name",
+		"send": "Send"
+	},
+	"about": {
+		"title": "About...",
+		"me": "Hello, this is my first flutter app using Flame 2D engine ! The project was carried out with the aim to learn the flutter basics.",
+		"visit": "My website"
+	},
+	"settings": {
+		"title": "Settings",
+		"music": "Enable music",
+		"language": "Language"
+	},
+	"help": {
+		"title": "Help",
+		"about" : "About",
+		"rules": "Rules",
+		"aim": "Your objective is to get a maximum of points before dying in deep void.",
+		"legend": "Caption",
+		"player": "This is your character, move him with virtual joystick, up and down and infinitly on horizontal axe.",
+		"meteor": "A meteorite, avoid them to not die !",
+		"bonus": "A shooting star, catch it and get a bonus of 1000 points!",
+		"sun": "A bright sun but beware it attract everything..."
+	}
+}
