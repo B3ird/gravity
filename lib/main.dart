@@ -19,26 +19,26 @@ void main() {
 }
 
 class Global {
+  
   static bool musicEnabled = false;
-  static String language = "fr";
   static AudioPlayer musicAudioPlayer = AudioPlayer();
   static AudioCache soundAudioPlayer = AudioCache();
+
+  static String defaultLanguage = "fr";
+  static String countryCode = Global.defaultLanguage;
+  
   static FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
-    translationLoader:
-        FileTranslationLoader(useCountryCode: false, fallbackFile: 'en', basePath: 'assets/i18n', forcedLocale: Locale('fr')),
+    translationLoader: FileTranslationLoader(
+        useCountryCode: false, fallbackFile: 'en', basePath: 'assets/i18n', forcedLocale: Locale(defaultLanguage)),
   );
 }
 
 class MyApp extends StatefulWidget {
+
   static void setLocale(BuildContext context, Locale newLocale) async {
     await FlutterI18n.refresh(context, newLocale);
     MyAppState state = context.findAncestorStateOfType<MyAppState>();
-    state.changeLanguage(newLocale);
-  }
-
-  static Future<Locale> getLocale(BuildContext context) async {
-    MyAppState state = context.findAncestorStateOfType<MyAppState>();
-    return state._locale;
+    state.changeLocale(newLocale);
   }
 
   @override
@@ -46,11 +46,9 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  Locale _locale = Locale("fr");
 
-  changeLanguage(Locale locale) {
+  changeLocale(Locale locale) {
     setState(() {
-      _locale = locale;
     });
   }
 
@@ -122,18 +120,30 @@ class SplashState extends State<Splash> {
 
 //Music switch
 class MusicSwitch extends StatefulWidget {
+
+  MusicSwitch({Key key}) : super(key: key);
+
   @override
   MusicSwitchState createState() => MusicSwitchState();
 }
 
 class MusicSwitchState extends State<MusicSwitch> {
+
   bool playMusic = Global.musicEnabled; //default
+
+  void refreshMusicSwitch(){
+    setState(() {
+      playMusic = Global.musicEnabled;
+    });
+  }
 
   void startMusic() {
     if (playMusic) {
-      Flame.audio.loopLongAudio('music.mp3', volume: 0.4).then((player) {
-        Global.musicAudioPlayer = player;
-      });
+      if (Global.musicAudioPlayer.state != AudioPlayerState.PLAYING) {
+        Flame.audio.loopLongAudio('music.mp3', volume: 0.4).then((player) {
+          Global.musicAudioPlayer = player;
+        });
+      }
     }
   }
 
@@ -178,15 +188,22 @@ class Home extends StatefulWidget {
   @override
   HomeState createState() => HomeState();
 
-  static void refresh(BuildContext context) async {
-    HomeState state = context.findAncestorStateOfType<HomeState>();
-    state.refresh();
-  }
+  // static void refresh(BuildContext context) async {
+  //   HomeState state = context.findAncestorStateOfType<HomeState>();
+  //   state.refreshHome();
+  // }
 }
 
 class HomeState extends State<Home> {
-  void refresh() {
-    setState(() {});
+
+  final GlobalKey<LanguageSwitchState> lss = GlobalKey();
+  final GlobalKey<MusicSwitchState> mss = GlobalKey();
+
+  void refreshHome() {
+    setState(() {
+      lss.currentState.refreshLanguageSwitch();
+      mss.currentState.refreshMusicSwitch();
+    });
   }
 
   @override
@@ -248,21 +265,23 @@ class HomeState extends State<Home> {
                   },
                 ),
               ),
-              // Container(
-              //   margin: EdgeInsets.only(top: 16),
-              //   child: MaterialButton(
-              //     minWidth: double.infinity,
-              //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: Colors.amber)),
-              //     padding: EdgeInsets.all(16.0),
-              //     child: Text(
-              //       FlutterI18n.translate(context, "home.settings"),
-              //       style: TextStyle(color: Colors.amber, fontSize: 20, fontWeight: FontWeight.bold),
-              //     ),
-              //     onPressed: () {
-              //       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Settings()));
-              //     },
-              //   ),
-              // ),
+              Container(
+                margin: EdgeInsets.only(top: 16),
+                child: MaterialButton(
+                  minWidth: double.infinity,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: Colors.amber)),
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    FlutterI18n.translate(context, "home.settings"),
+                    style: TextStyle(color: Colors.amber, fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {
+                    // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Settings()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_)=> Settings()),)
+                        .then((val)=>refreshHome()); //CALL ON SETTING BACK == HOME RESUME
+                  },
+                ),
+              ),
               Container(
                 margin: EdgeInsets.only(top: 16),
                 child: MaterialButton(
@@ -280,9 +299,9 @@ class HomeState extends State<Home> {
             ]),
             Align(
               alignment: Alignment.topLeft,
-              child: MusicSwitch(),
+              child: MusicSwitch(key:mss),
             ),
-            Align(alignment: Alignment.topRight, child: LanguageSwitch()),
+            Align(alignment: Alignment.topRight, child: LanguageSwitch(key: lss)),
           ]),
         ));
   }
@@ -332,7 +351,6 @@ class MyGame extends StatefulWidget {
 }
 
 class MyGameState extends State<MyGame> with WidgetsBindingObserver {
-
   GarvityGame game;
 
   @override
@@ -345,16 +363,15 @@ class MyGameState extends State<MyGame> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused){
+    if (state == AppLifecycleState.paused) {
       game.setPause(true);
-    } else if (state == AppLifecycleState.resumed){
+    } else if (state == AppLifecycleState.resumed) {
       game.setPause(false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: Colors.black,
         // CREATE ISSUE WITH HEIGHT
@@ -663,17 +680,26 @@ class Site extends StatelessWidget {
 
 //Language switch
 class LanguageSwitch extends StatefulWidget {
+
+  LanguageSwitch({Key key}) : super(key: key);
+
   @override
   LanguageSwitchState createState() => LanguageSwitchState();
 }
 
 class LanguageSwitchState extends State<LanguageSwitch> {
-  String dropdownValue = Global.language.toUpperCase();
+  
+  String dropdownValue = Global.countryCode.toUpperCase();
+
+  void refreshLanguageSwitch(){
+    setState(() {
+      dropdownValue = Global.countryCode.toUpperCase();
+    });
+  }
 
   void changeLanguage() async {
-    Global.language = dropdownValue.toLowerCase();
+    Global.countryCode = dropdownValue.toLowerCase();
     MyApp.setLocale(context, Locale(dropdownValue.toLowerCase()));
-    // Home.refresh(context); TODO FIX PARAM SETTINGS ON HOME
   }
 
   @override
@@ -857,7 +883,7 @@ class SettingsState extends State<Settings> {
           title: Text(FlutterI18n.translate(context, "settings.title")),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(context, true),
           )),
       body: Container(
           padding: EdgeInsets.all(16),
@@ -880,7 +906,7 @@ class SettingsState extends State<Settings> {
             ]),
             Align(
               child: Text(
-                'Version 0.0.1',
+                'Version 0.0.3',
                 style: TextStyle(color: Colors.grey, fontSize: 12.0),
               ),
               alignment: Alignment.bottomCenter,

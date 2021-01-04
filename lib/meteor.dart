@@ -8,7 +8,6 @@ import 'package:flame/sprite.dart';
 import 'package:flutter_sample/gravity-game.dart';
 
 class Meteor {
-  
   final GarvityGame mGame;
   Rect mRect;
   Sprite mSprite;
@@ -23,12 +22,12 @@ class Meteor {
   double minSize = 20;
   double maxSize = 50;
 
-  Meteor(this.mGame){
+  Meteor(this.mGame) {
     Random random = Random();
 
     double width = random.nextDouble() * maxSize + minSize;
     double height = random.nextDouble() * maxSize + minSize;
-    mSize = Size(width,height);
+    mSize = Size(width, height);
 
     double minPosition = 0;
     double maxPosition = mGame.screenSize.width;
@@ -43,8 +42,23 @@ class Meteor {
     mSprite = Sprite("props/meteor.png");
 
     burnAnimation = Animation.sequenced("fx/burn_explosion.png", 13, textureHeight: 98, textureWidth: 98);
+
+
+    int min = 1;
+    int max = 3;
+    int fileIndex = random.nextInt(max) + min;
+    String filename = "meteor_" + fileIndex.toString() + ".mp3";
+    double volume = (mSize.width*mSize.height)/(maxSize*maxSize);
+    switch (fileIndex) {
+      case 1:
+        Flame.audio.play(filename, volume: 0.2);
+        break;
+      default:
+        Flame.audio.play(filename, volume: volume);
+    }
+
   }
-  
+
   void render(Canvas canvas) {
     if (!mDestroyed) {
       // canvas.save();
@@ -52,11 +66,11 @@ class Meteor {
       mSprite.renderRect(canvas, mRect);
       // canvas.restore();
     } else {
-        if (isBurn) {
-          if (!burnAnimation.done()) {
-            burnAnimation.getSprite().renderRect(canvas, mRect);
-          }
+      if (isBurn) {
+        if (!burnAnimation.done()) {
+          burnAnimation.getSprite().renderRect(canvas, mRect);
         }
+      }
     }
   }
 
@@ -88,12 +102,12 @@ class Meteor {
 
   void burn() {
     if (!mDestroyed) {
-      mRect = Rect.fromLTWH(mRect.left-mSize.width/2, mRect.top-mSize.height/2, mSize.width*2, mSize.height*2);
+      mRect = Rect.fromLTWH(mRect.left - mSize.width / 2, mRect.top - mSize.height / 2, mSize.width * 2, mSize.height * 2);
       mDestroyed = true;
       isBurn = true;
       burnAnimation.loop = false;
-      double volume = (mRect.width*mRect.height)/(maxSize*maxSize);
-      print("volume "+volume.toString());
+      double volume = (mSize.width * mSize.height) / (maxSize * maxSize);
+      print("volume " + volume.toString());
       Flame.audio.play("burn.mp3", volume: volume);
     }
   }

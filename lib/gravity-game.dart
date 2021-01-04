@@ -186,25 +186,11 @@ class GarvityGame extends Game with TapDetector {
 
   void spawnMeteor() {
     meteors.add(Meteor(this));
-    Random random = Random();
-    int min = 1;
-    int max = 3;
-    int fileIndex = random.nextInt(max) + min;
-    String filename = "meteor_" + fileIndex.toString() + ".mp3";
-
-    switch (fileIndex) {
-      case 1:
-        Flame.audio.play(filename, volume: 0.2);
-        break;
-      default:
-        Flame.audio.play(filename);
-    }
   }
 
   void spawnBonus() {
-    print("SPAWN BONUS " + lastBonusSpawn.toString());
+    // print("SPAWN BONUS " + lastBonusSpawn.toString());
     bonuses.add(Bonus(this));
-    Flame.audio.play("bonus.mp3");
   }
 
   void preloadImages() {

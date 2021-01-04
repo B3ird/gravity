@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flame/flame.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter_sample/gravity-game.dart';
@@ -31,6 +32,8 @@ class Bonus {
     mVelocity = random.nextDouble() * maxVelocity + minVelocity;
     mRect = Rect.fromLTWH(position.x, position.y, mSize.width, mSize.height);
     mSprite = Sprite("props/star.png");
+
+    Flame.audio.play("bonus.mp3");
   }
 
   void render(Canvas canvas) {
