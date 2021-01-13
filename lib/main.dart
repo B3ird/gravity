@@ -109,7 +109,7 @@ class SplashState extends State<Splash> {
               : Container(),
           Align(
             child: Text(
-              'Version 0.0.1',
+              'Version 0.0.3',
               style: TextStyle(color: Colors.grey, fontSize: 12.0),
             ),
             alignment: Alignment.bottomCenter,

@@ -1,16 +1,30 @@
-# flutter_sample
+# GRAVITY
 
-A new Flutter application.
+![Unicode game screenshot](screenshots/1.png)
+![Unicode game screenshot](screenshots/2.png)
 
-## Getting Started
+Hello, this is my first flutter app using Flame 2D engine ! The project was carried out with the aim to learn the flutter basics.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+##  Features covered
+-splashscreen
+-game engine (lib :flame, vector_math)
+-game controller (custom class)
+-sharedpref (lib: shared_preferences, feature: score)
+-audio (lib: audioplayers & flame)
+-navigation
+-future methods
+-score list
+-contact form with http request (lib: http)
+-portfolio webview (lib: webview_flutter)
+-switch button as reusable widget
+-select as reusable widget
+-custom dialog
+-app icon (terminal cmd)
+-empty score list placeholder
+-internationalisation (lib: i18n)
+-score model object
+-json encode/decode
+-globalKey (refresh on back) 
+-share data between screen
+-global variables 
