@@ -28,3 +28,6 @@ Hello, this is my first flutter app using Flame 2D engine ! The project was carr
 - globalKey (refresh on back) 
 - share data between screen
 - global variables 
+
+## Envie de tester ?
+Télécharger l'[APK](/apk/gravity.apk)
